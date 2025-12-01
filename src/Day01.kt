@@ -12,22 +12,17 @@ class Day01(input: List<String>) {
             }
             .count { it == 0 }
     
-    fun partTwo(): Int {
-        var zeroes = 0
+    fun partTwo(): Int =
         data
-            .fold(initialPosition) { position, (dir, clicks) ->
+            .fold(initialPosition to 0) { (position, zeroes), (dir, clicks) ->
                 val sign = dirSign.getValue(dir)
                 val positions = generateSequence(position) {
-                    (it + 1 * sign).mod(totalPositions)
+                    (it + sign).mod(totalPositions)
                 }.drop(1).take(clicks).toList()
-                println("positions: $positions")
-                zeroes += positions.count { it == 0 }
-                println("zeroes: $zeroes")
-                positions.last().aprintln()
+                // println("positions: $positions")
+                positions.last() to zeroes + positions.count { it == 0 }
             }
-        
-        return zeroes
-    }
+            .second
     
     private companion object {
         fun parseInput(input: List<String>) = input.map { it.first() to it.drop(1).toInt() }
