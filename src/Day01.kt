@@ -6,6 +6,7 @@ class Day01(input: List<String>) {
     
     fun partOne(): Int =
         data
+            .asSequence()
             .runningFold(initialPosition) { position, (dir, clicks) ->
                 val sign = dirSign.getValue(dir)
                 (position + clicks * sign).mod(totalPositions)
