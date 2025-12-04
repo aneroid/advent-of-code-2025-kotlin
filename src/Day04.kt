@@ -1,28 +1,22 @@
 class Day04(input: List<String>) {
     private val data = parseInput(input)
     
-    fun partOne(): Int = data.count { (pt, _) ->
-        pt.neighbours().count { data[it] != null } < 4
+    fun partOne(): Int = data.keys.count { pt ->
+        pt.neighbours().count { it in data } < 4
     }
     
     fun partTwo(): Int {
-        val removeSeq = generateSequence(emptySet<Point>()) { removedPoints ->
-            // println("removedPoints: $removedPoints")
-            val remove = data.filter { (pt, _) ->
-                pt !in removedPoints && pt.neighbours().count { it !in removedPoints && data[it] != null } < 4
+        val removeSeq = generateSequence(data.keys to 0) { (points, _) ->
+            val remove = points.filter { pt ->
+                pt.neighbours().count { it in points } < 4
             }
-            // println(remove)
-            if (remove.isEmpty()) {
-                null
-            } else {
-                removedPoints + remove.keys
-            }
+            points - remove.toSet() to remove.size
         }
-        return removeSeq.map { it.size }.last()
+        return removeSeq.drop(1).map { it.second }.takeWhile { it != 0 }.sum()
     }
     
     private companion object {
-        fun parseInput(input: List<String>) = gridFromLines(input, skipChar = '.', mapper = { c: Char -> c })
+        fun parseInput(input: List<String>) = gridFromLines(input, skipChar = '.', mapper = { it })
     }
 }
 

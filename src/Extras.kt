@@ -162,6 +162,7 @@ enum class Direction(val offset: Point) {
 typealias Grid<T> = Map<Point, T>
 
 fun <T> gridFromLines(input: List<String>, skipChar: Char? = null, mapper: (Char) -> T): Grid<T> =
+    // mapper can default to `{ it }`
     buildMap {
         input.flatMapIndexed { rowIdx, row ->
             row.mapIndexed { colIdx, ch ->
