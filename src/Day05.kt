@@ -1,3 +1,6 @@
+import kotlin.math.max
+import kotlin.math.min
+
 class Day05(input: List<List<String>>) {
     private val data = parseInput(input)
     private val freshRanges = data.first
@@ -5,28 +8,22 @@ class Day05(input: List<List<String>>) {
     
     fun LongRange.hasOverlapWith(other: LongRange) = first <= other.last && last >= other.first
     
-    fun LongRange.getOverlapUnionWith(other: LongRange): LongRange =
-        listOf(first, other.first).min()..listOf(last, other.last).max()
+    fun LongRange.getUnionWith(other: LongRange): LongRange =
+        min(first, other.first)..max(last, other.last)
     
     private tailrec fun LongRange.addToNormalised(normalisedRanges: MutableList<LongRange>) {
-        // println("\ndoing: $this")
-        // println("normalised: $normalisedRanges")
         for ((idx, normRange) in normalisedRanges.withIndex()) {
-            if (!this.hasOverlapWith(normRange)) {
-                continue
+            when {
+                !this.hasOverlapWith(normRange) -> continue
+                this == normRange -> return
             }
-            if (this == normRange) {
-                return
-            }
-            val newRange = this.getOverlapUnionWith(normRange)
-            // println("newRange: $newRange")
+            val newRange = this.getUnionWith(normRange)
             if (newRange == normRange) {
                 return
             }
             normalisedRanges.removeAt(idx)
             return newRange.addToNormalised(normalisedRanges)
         }
-        // println("adding: $this")
         normalisedRanges.add(this)
     }
     
